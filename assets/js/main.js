@@ -7,47 +7,18 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl);
 });
 
-$(".banner-slider").owlCarousel({
-    responsiveClass: true,
-    loop: false,
-    margin: 0,
-    autoplay: true,
-    dots: false,
-    nav: true,
-    responsive: {
-        0: {
-            items: 1,
-        },
-        600: {
-            items: 1,
-
-        },
-        1000: {
-            items: 1,
-        },
-    }
+// Banner Swiper
+var swiper = new Swiper(".banner-swiper", {
+    spaceBetween: 30,
+    effect: "fade",
+    speed: 500,
+    autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+    },
+    loop: "true",
 });
 
-$(".category-slider").owlCarousel({
-    responsiveClass: true,
-    loop: true,
-    margin: 20,
-    autoplay: true,
-    dots: false,
-    nav: true,
-    responsive: {
-        0: {
-            items: 3,
-        },
-        600: {
-            items: 4,
-
-        },
-        1000: {
-            items: 6,
-        },
-    }
-});
 
 $(".product-slider").owlCarousel({
     responsiveClass: true,
@@ -69,8 +40,6 @@ $(".product-slider").owlCarousel({
         },
     }
 });
-
-
 
 $(".blog-slider").owlCarousel({
     responsiveClass: true,
@@ -108,7 +77,7 @@ var priceRangeValue = document.getElementById('priceRange-value');
 // Check if the elements exist
 if (slider && priceRangeValue) {
     // Your code for creating the slider and updating the input field
-    noUiSlider.create(slider, {
+    initSlider.create(slider, {
         start: [20, 80],
         connect: true,
         range: {
