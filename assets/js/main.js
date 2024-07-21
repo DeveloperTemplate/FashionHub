@@ -1,119 +1,64 @@
-$(function () {
-  var tooltipTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="tooltip"]')
-);
+$(document).ready(function(){
+    // Initialize tooltip
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
-});
-
-// Banner Swiper
-var swiper = new Swiper(".banner-swiper", {
-    spaceBetween: 30,
-    effect: "fade",
-    speed: 500,
-    autoplay: {
-        delay: 3000,
-        disableOnInteraction: false,
-    },
-    loop: "true",
-});
-
-
-$(".product-slider").owlCarousel({
-    responsiveClass: true,
-    autoplay: true,
-    dots: false,
-    responsive: {
-        0: {
-            nav: false,
-            items: 2,
+    // Initialize Banner Swiper
+    var swiper = new Swiper(".banner-swiper", {
+        spaceBetween: 30,
+        effect: "fade",
+        speed: 500,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
         },
-        600: {
-            nav: true,
-            items: 3,
+        loop: true,
+    });
 
-        },
-        1000: {
-            nav: true,
-            items: 4,
-        },
-    }
-});
-
-$(".blog-slider").owlCarousel({
-    responsiveClass: true,
-    loop: false,
-    margin: 40,
-    autoplay: false,
-    responsive: {
-        0: {
-            nav: false,
-            dots: true,
-            items: 1,
-        },
-        600: {
-            nav: false,
-            dots: false,
-            items: 2,
-
-        },
-        1000: {
-            nav: true,
-            dots: false,
-            items: 3,
-        },
-    }
-});
-
-/////// Nice Select ///
-$(".nice-option").niceSelect();
-
-//// Price Range ///
-
-var slider = document.getElementById('priceRange');
-var priceRangeValue = document.getElementById('priceRange-value');
-
-// Check if the elements exist
-if (slider && priceRangeValue) {
-    // Your code for creating the slider and updating the input field
-    initSlider.create(slider, {
-        start: [20, 80],
-        connect: true,
-        range: {
-            'min': 0,
-            'max': 100
-        },
-        format: {
-            to: function (value) {
-                return Math.round(value);
-            },
-            from: function (value) {
-                return value.replace('$', '');
-            }
+    // Initialize Product Slider
+    $(".product-slider").owlCarousel({
+        responsiveClass: true,
+        autoplay: true,
+        dots: false,
+        responsive: {
+            0: { nav: false, items: 2 },
+            600: { nav: true, items: 3 },
+            1000: { nav: true, items: 4 },
         }
     });
 
-    // Update input field with slider value
-    slider.noUiSlider.on('update', function (values, handle) {
-        priceRangeValue.textContent = '$' + values[0] + ' - $' + values[1];
+    // Initialize Blog Slider
+    $(".blog-slider").owlCarousel({
+        responsiveClass: true,
+        loop: false,
+        margin: 40,
+        autoplay: false,
+        responsive: {
+            0: { nav: false, dots: true, items: 1 },
+            600: { nav: false, dots: false, items: 2 },
+            1000: { nav: true, dots: false, items: 3 },
+        }
     });
-}
 
+    // Initialize Nice Select
+    $(".nice-option, .filter-option").niceSelect();
 
-// if ($('#product-img-zoom').length > 0) {
-//     ZoomActive();
-// }
+    if ($('#product-img-zoom').length > 0) {
+        ZoomActive();
+    }
 
-// function ZoomActive() {
-//     $('#product-img-zoom').ezPlus({
-//         zoomType: 'inner',
-//         cursor: 'crosshair',
-//         borderSize: 0
-//     });
-// }
+    function ZoomActive() {
+        $('#product-img-zoom').ezPlus({
+            zoomType: 'inner',
+            cursor: 'crosshair',
+            borderSize: 0
+        });
+    }
 
-var $sliderSingle = initSlider();
+    // Initialize Slick Slider
+    var $sliderSingle = initSlider();
 
     // Initialize the slider
     function initSlider() {
@@ -121,6 +66,7 @@ var $sliderSingle = initSlider();
             var $sliderSingle = $(".slider-nav").slick({
                 slidesToShow: 4,
                 slidesToScroll: 1,
+                // infinite: false,
                 arrows: false,
                 dots: false,
                 focusOnSelect: true
@@ -151,37 +97,57 @@ var $sliderSingle = initSlider();
     }
 
     // Function to update the active image and zoom
-    function updateActiveImage() {
+    function updateActiveImageAndZoom() {
         var activeImgSrc = getImageOfActiveSlide();
-        if (activeImgSrc && $('#product-img-active').length > 0) {
-            $('#product-img-active img').attr('src', activeImgSrc);
+        if (activeImgSrc && $('#product-img-zoom').length > 0) {
+            $('#product-img-zoom img').attr('src', activeImgSrc);
+            $('#product-img-zoom').data('zoom-image', activeImgSrc);
+            ZoomActive();
         }
     }
 
     // Event listener for slider change
     if ($sliderSingle) {
         $sliderSingle.on('afterChange', function (event, slick, currentSlide) {
-            updateActiveImage();
+            updateActiveImageAndZoom();
         });
     }
 
+    // Event listeners for buttons
+    $('#prevBtn').on('click', function() {
+        if ($sliderSingle) {
+            $sliderSingle.slick('slickPrev');
+        }
+    });
 
-      //////  Counter Increament
+    $('#nextBtn').on('click', function() {
+        if ($sliderSingle) {
+            $sliderSingle.slick('slickNext');
+        }
+    });
 
-  $(".count-increament").click(function (e) {
-    var count = $(this).parent().find("input").val();
-    count++;
-    $(this).parent().find("input").val(count);
-  });
+    // Counter Increament
+    $(".count-increament").click(function(e) {
+        var count = $(this).parent().find("input").val();
+        count++;
+        $(this).parent().find("input").val(count);
+    });
 
-  //////  Counter Decreament
+    // Counter Decreament
+    $(".count-decreament").click(function(e) {
+        var count = $(this).parent().find("input").val();
+        count--;
+        if (count > 0) {
+            $(this).parent().find("input").val(count);
+        }
+    });
 
-  $(".count-decreament").click(function (e) {
-    var count = $(this).parent().find("input").val();
-    count--;
-    if (count > 0) {
-      $(this).parent().find("input").val(count);
-    }
-  });
-
+    // Same Shipping Address Toggle
+    $('#sameShippingAddress').change(function() {
+        if ($(this).is(':checked')) {
+            $('.shipping-details').hide();
+        } else {
+            $('.shipping-details').show();
+        }
+    });
 });
