@@ -50,11 +50,13 @@ $(document).ready(function(){
     }
 
     function ZoomActive() {
-        $('#product-img-zoom').ezPlus({
-            zoomType: 'inner',
-            cursor: 'crosshair',
-            borderSize: 0
-        });
+        if ($(window).width() > 768) {
+            $('#product-img-zoom').ezPlus({
+                zoomType: 'inner',
+                cursor: 'crosshair',
+                borderSize: 0
+            });
+        }
     }
 
     // Initialize Slick Slider
@@ -148,6 +150,13 @@ $(document).ready(function(){
             $('.shipping-details').hide();
         } else {
             $('.shipping-details').show();
+        }
+    });
+
+    // Reinitialize zoom on window resize
+    $(window).resize(function() {
+        if ($('#product-img-zoom').length > 0) {
+            ZoomActive();
         }
     });
 });
