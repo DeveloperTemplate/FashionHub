@@ -64,15 +64,25 @@ $(document).ready(function(){
 
     // Initialize the slider
     function initSlider() {
-        if ($(".slider-nav").length > 0) {
-            var $sliderSingle = $(".slider-nav").slick({
-                slidesToShow: 4,
+        var $sliderNav = $(".slider-nav");
+        if ($sliderNav.length > 0) {
+            var slidesToShow = 4;
+            var totalItems = $sliderNav.children().length; // Use children() to count items correctly
+            var $sliderSingle = $sliderNav.slick({
+                slidesToShow: slidesToShow,
                 slidesToScroll: 1,
-                // infinite: false,
                 arrows: false,
                 dots: false,
                 focusOnSelect: true
             });
+
+            // Show/hide navigation buttons based on item count
+            if (totalItems > slidesToShow) {
+                $('#prevBtn, #nextBtn').show();
+            } else {
+                $('#prevBtn, #nextBtn').hide();
+            }
+
             return $sliderSingle;
         }
         return null;
@@ -90,7 +100,7 @@ $(document).ready(function(){
     function getImageOfActiveSlide() {
         var activeSlideIndex = getActiveSlideIndex();
         if (activeSlideIndex !== -1) {
-            var $activeSlide = $(".slider-nav .slick-slide").eq(activeSlideIndex);
+            var $activeSlide = $(".slider-nav .slick-slide[data-slick-index='" + activeSlideIndex + "']");
             var $img = $activeSlide.find('img');
             var imgSrc = $img.attr('src');
             return imgSrc;
